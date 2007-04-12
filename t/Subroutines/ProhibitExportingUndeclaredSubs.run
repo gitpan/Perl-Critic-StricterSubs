@@ -1,0 +1,63 @@
+##############################################################################
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/t/Subroutines/ProhibitExportingUndeclaredSubs.run $
+#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#   $Author: thaljef $
+# $Revision: 1464 $
+##############################################################################
+
+## - Perl::Critic::Policy::Subroutines::ProhibitExportingUndeclaredSubs [4.0] -
+## name Exporting a sub that does *not* exist (via @EXPORT)
+## failures 2
+## cut
+
+package Bar;
+use base 'Exporter';
+
+@EXPORT = qw(baz &nuts $wango %tango); # Note that variables are ignored!
+
+## - Perl::Critic::Policy::Subroutines::ProhibitExportingUndeclaredSubs [4.1] -
+## name Exporting a sub that *does* exist (via @EXPORT)
+## failures 0
+## cut
+
+package Bar;
+use base 'Exporter';
+
+@EXPORT = qw(baz &nuts $wango %tango); # Note that variables are ignored!
+
+sub baz {...}
+sub nuts {...}
+
+## - Perl::Critic::Policy::Subroutines::ProhibitExportingUndeclaredSubs [4.2] -
+## name Exporting a sub that does *not* exist (via @EXPORT_OK)
+## failures 2
+## cut
+
+package Bar;
+use base 'Exporter';
+
+@EXPORT_OK = qw(baz &nuts $wango %tango); # Note that variables are ignored!
+
+## - Perl::Critic::Policy::Subroutines::ProhibitExportingUndeclaredSubs [4.3] -
+## name Exporting a sub that does exist (via @EXPORT_OK)
+## failures 0
+## cut
+
+package Bar;
+use base 'Exporter';
+
+@EXPORT_OK = qw(baz &nuts $wango %tango); # Note that variables are ignored!
+
+sub baz {...}
+sub nuts {...}
+
+
+##############################################################################
+# Local Variables:
+#   mode: cperl
+#   cperl-indent-level: 4
+#   fill-column: 78
+#   indent-tabs-mode: nil
+#   c-indentation-style: bsd
+# End:
+# ex: set ts=8 sts=4 sw=4 tw=78 ft=perl expandtab :

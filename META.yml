@@ -1,0 +1,44 @@
+---
+name: Perl-Critic-StricterSubs
+version: 0.01
+author:
+  - Jeffrey Thalhammer <thaljef@cpan.org>
+abstract: Perl::Critic plugin for stricter subroutine checking
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  File::PathList: 0
+  Perl::Critic: 1.051
+  Perl::Critic::TestUtils: 1.051
+  Perl::Critic::Utils: 1.051
+  Perl::Critic::Violation: 1.051
+build_requires:
+  Test::Deep: 0
+  Test::More: 0
+provides:
+  Perl::Critic::Policy::Modules::RequireExplicitInclusion:
+    file: lib/Perl/Critic/Policy/Modules/RequireExplicitInclusion.pm
+    version: 0.01
+  Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs:
+    file: lib/Perl/Critic/Policy/Subroutines/ProhibitCallsToUndeclaredSubs.pm
+    version: 0.01
+  Perl::Critic::Policy::Subroutines::ProhibitCallsToUnexportedSubs:
+    file: lib/Perl/Critic/Policy/Subroutines/ProhibitCallsToUnexportedSubs.pm
+    version: 0.01
+  Perl::Critic::Policy::Subroutines::ProhibitExportingUndeclaredSubs:
+    file: lib/Perl/Critic/Policy/Subroutines/ProhibitExportingUndeclaredSubs.pm
+    version: 0.01
+  Perl::Critic::Policy::Subroutines::ProhibitQualifiedSubDeclarations:
+    file: lib/Perl/Critic/Policy/Subroutines/ProhibitQualifiedSubDeclarations.pm
+    version: 0.01
+  Perl::Critic::StricterSubs:
+    file: lib/Perl/Critic/StricterSubs.pm
+    version: 0.01
+  Perl::Critic::StricterSubs::Utils:
+    file: lib/Perl/Critic/StricterSubs/Utils.pm
+    version: 0.01
+generated_by: Module::Build version 0.2806
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2

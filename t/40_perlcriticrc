@@ -1,0 +1,30 @@
+##############################################################################
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/t/40_perlcriticrc $
+#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#   $Author: thaljef $
+# $Revision: 1464 $
+##############################################################################
+
+severity = 1
+
+#-----------------------------------------------------------------------------
+
+# Just use the emacs/vi settings
+[-CodeLayout::RequireTidyCode]
+
+# Too many false positives
+[-ValuesAndExpressions::ProhibitCommaSeparatedStatements]
+
+# We'll expand the documentation later
+[Documentation::RequirePodSections]
+lib_sections    = NAME|AFFILIATION|DESCRIPTION|AUTHOR|COPYRIGHT
+script_sections = NAME|AFFILIATION|DESCRIPTION|AUTHOR|COPYRIGHT
+
+# svn is good
+[Miscellanea::RequireRcsKeywords]
+keywords = URL Date Author Revision
+
+# No tabs, ever.
+[CodeLayout::ProhibitHardTabs]
+allow_leading_tabs = 0
+
