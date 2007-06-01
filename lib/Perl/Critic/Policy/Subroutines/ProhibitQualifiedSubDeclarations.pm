@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/lib/Perl/Critic/Policy/Subroutines/ProhibitQualifiedSubDeclarations.pm $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/lib/Perl/Critic/Policy/Subroutines/ProhibitQualifiedSubDeclarations.pm $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ##############################################################################
 
 package Perl::Critic::Policy::Subroutines::ProhibitQualifiedSubDeclarations;
@@ -11,11 +11,11 @@ use strict;
 use warnings;
 use base 'Perl::Critic::Policy';
 
-use Perl::Critic::Utils qw(:severities);
+use Perl::Critic::Utils qw( &is_qualified_name :severities);
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 #-----------------------------------------------------------------------------
 
@@ -35,9 +35,8 @@ sub violates {
 
     my ($self, $elem, undef) = @_;
 
-    if ( $elem->name() =~ m/::/mx ) {
+    if ( is_qualified_name( $elem->name() ) ) {
         return $self->violation( $desc, $expl, $elem );
-
     }
 
     return;  #ok!

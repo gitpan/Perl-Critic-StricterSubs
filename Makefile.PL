@@ -1,8 +1,8 @@
 #######################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/Makefile.PL $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/Makefile.PL $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ########################################################################
 
 use strict;
@@ -15,10 +15,10 @@ WriteMakefile( NAME           => 'Perl::Critic::StricterSubs',
                ABSTRACT_FROM  => 'lib/Perl/Critic/StricterSubs.pm',
                VERSION_FROM   => 'lib/Perl/Critic/StricterSubs.pm',
                PL_FILES       => {},
-               PREREQ_PM      => {'Perl::Critic'            => 1.51,
-                                  'Perl::Critic::Utils'     => 1.51,
-                                  'Perl::Critic::Violation' => 1.51,
-                                  'Perl::Critic::TestUtils' => 1.51,
+               PREREQ_PM      => {'Perl::Critic'            => 1.052,
+                                  'Perl::Critic::Utils'     => 1.052,
+                                  'Perl::Critic::Violation' => 1.052,
+                                  'Perl::Critic::TestUtils' => 1.052,
                                   'Test::More'              => 0,
                                   'Test::Deep'              => 0,
                                   'File::PathList'          => 0,

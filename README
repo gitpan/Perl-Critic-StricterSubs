@@ -24,9 +24,11 @@ DESCRIPTION
     of writing code that makes calls to undefined subroutines.
 
     This coding style will not appeal to everyone. Some folks will surely
-    find this coding style to be too verbose or too restrictive. But
-    hopefully, these Policies will encourage you to consciously consider the
-    inherent trade-offs of your current coding style.
+    find this coding style to be too verbose or too restrictive. In
+    particular, importing via Exporter tags and pattern matching is
+    purposely not supported. But hopefully, these Policies will encourage
+    you to consciously consider the inherent trade-offs of your current
+    coding style.
 
 LIMITATIONS
     Perl::Critic is a static analyzer, so the Policies in this distro only
@@ -91,6 +93,12 @@ CONFIGURATION
     Each Policy in this distro may support additional configuration settings
     that can be accessed through your .perlcriticrc file. See the perldoc in
     each Policy for more details.
+
+ACKNOWLEDGEMENTS
+    DEVELOPMENT of the "Perl-Critic-StricterSubs" distribution was financed
+    by a grant from The Mathworks (<http://mathworks.com>). The Perl::Critic
+    team sincerely thanks The Mathworks for their generous support of the
+    Perl community and open-source software.
 
 AUTHOR
     Jeffrey Ryan Thalhammer <thaljef@cpan.org>

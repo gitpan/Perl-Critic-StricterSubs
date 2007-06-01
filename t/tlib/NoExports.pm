@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/t/tlib/NoExports.pm $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/t/tlib/NoExports.pm $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ##############################################################################
 
 package NoExports;

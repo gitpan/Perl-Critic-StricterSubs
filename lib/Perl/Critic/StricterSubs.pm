@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/lib/Perl/Critic/StricterSubs.pm $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/lib/Perl/Critic/StricterSubs.pm $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ##############################################################################
 
 package Perl::Critic::StricterSubs;
@@ -12,7 +12,7 @@ use warnings;
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 #-----------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ __END__
 
 =pod
 
-=for stopwords distro hoc strictersubs
+=for stopwords distro hoc strictersubs Mathworks ACKNOWLEDGEMENTS
 
 =head1 NAME
 
@@ -55,9 +55,11 @@ enforce a specific and deliberate coding style that minimizes the
 chance of writing code that makes calls to undefined subroutines.
 
 This coding style will not appeal to everyone.  Some folks will surely
-find this coding style to be too verbose or too restrictive.  But
-hopefully, these Policies will encourage you to consciously consider
-the inherent trade-offs of your current coding style.
+find this coding style to be too verbose or too restrictive.  In
+particular, importing via L<Exporter> tags and pattern matching is
+purposely not supported.  But hopefully, these Policies will encourage
+you to consciously consider the inherent trade-offs of your current
+coding style.
 
 =head1 LIMITATIONS
 
@@ -133,6 +135,13 @@ configuring the L<Perl::Critic> engine.
 Each Policy in this distro may support additional configuration
 settings that can be accessed through your F<.perlcriticrc> file.  See
 the perldoc in each Policy for more details.
+
+=head1 ACKNOWLEDGEMENTS
+
+DEVELOPMENT of the C<Perl-Critic-StricterSubs> distribution was
+financed by a grant from The Mathworks (L<http://mathworks.com>).
+The Perl::Critic team sincerely thanks The Mathworks for their
+generous support of the Perl community and open-source software.
 
 =head1 AUTHOR
 

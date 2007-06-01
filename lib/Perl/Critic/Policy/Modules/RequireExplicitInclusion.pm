@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/lib/Perl/Critic/Policy/Modules/RequireExplicitInclusion.pm $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/lib/Perl/Critic/Policy/Modules/RequireExplicitInclusion.pm $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ##############################################################################
 
 package Perl::Critic::Policy::Modules::RequireExplicitInclusion;
@@ -13,9 +13,11 @@ use base 'Perl::Critic::Policy';
 
 use Perl::Critic::Utils qw(
     &hashify
-    &policy_short_name
-    &is_function_call
     &is_class_name
+    &is_function_call
+    &is_perl_builtin
+    &is_qualified_name
+    &policy_short_name
     :characters
     :severities
 );
@@ -27,7 +29,7 @@ use Perl::Critic::StricterSubs::Utils qw(
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 my $expl =
     'Without importing a package, it is unlikely that references to things inside it even exist.';
@@ -54,7 +56,7 @@ sub violates {
     }
 
     my @included_packages = get_package_names_from_include_statements($doc);
-    my @builtin_packages = ( qw(main UNIVERSAL CORE::GLOBAL), $EMPTY );
+    my @builtin_packages = ( qw(main UNIVERSAL CORE CORE::GLOBAL), $EMPTY );
 
     my %all_packages =
         hashify( @declared_packages, @included_packages, @builtin_packages );
@@ -80,7 +82,7 @@ sub _find_qualified_subroutine_calls {
 
                 return
                          $elem->isa('PPI::Token::Word')
-                     &&  index ( $elem->content(), q{::} ) >= 0
+                     &&  is_qualified_name( $elem->content() )
                      &&  is_function_call( $elem );
 
             }
@@ -102,8 +104,8 @@ sub _find_class_method_calls {
 
                 return
                          $elem->isa('PPI::Token::Word')
-                     &&  is_class_name( $elem );
-
+                     &&  is_class_name( $elem )
+                     && !is_perl_builtin( $elem );
             }
         );
 
@@ -123,7 +125,7 @@ sub _find_qualified_symbols {
 
                 return
                         $elem->isa('PPI::Token::Symbol')
-                    &&  index ( $elem->canonical(), q{::} ) >= 0;
+                    &&  is_qualified_name( $elem->canonical() );
             }
         );
 
@@ -391,6 +393,25 @@ C<process_widgets()> subroutine actually exists in the C<Foo> package.
 =head1 CONFIGURATION
 
 None.
+
+=head1 DIAGNOSTICS
+
+=over 8
+
+=item C<Modules::RequireExplicitInclusion: Cannot cope with mutiple packages in file>
+
+This warning happens when the file under analysis contains multiple packages,
+which is not currently supported.  This Policy will simply ignore any file
+with multiple packages.
+
+L<Perl::Critic> advises putting multiple packages in one file, and has
+additional Policies to help enforce that.
+
+=back
+
+=head1 SEE ALSO
+
+L<Perl::Critic::Policy::Modules::ProhibitMultiplePackages>
 
 =head1 AUTHOR
 

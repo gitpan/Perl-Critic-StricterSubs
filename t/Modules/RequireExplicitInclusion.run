@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/t/Modules/RequireExplicitInclusion.run $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/t/Modules/RequireExplicitInclusion.run $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ##############################################################################
 
 ## ----- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.0 ] -----
@@ -180,7 +180,7 @@ print join (@Foo::BARS), qq{\n};
 
 ## ---- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.14 ] ----
 ## name Qualified name from package that is included in an END block.
-## failures 1
+## failures 0
 ## cut
 
 END {
@@ -191,13 +191,60 @@ print join (@Foo::BARS), qq{\n};
 
 ## ---- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.15 ] ----
 ## name Qualified name from package that is included in a lexical block.
-## failures 1
+## failures 0
 ## cut
 
 
 {
     require Foo;
     print join (@Foo::BARS), qq{\n};
+}
+
+## ---- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.16 ] ----
+## name Conditional inclusions.
+## failures 0
+## cut
+
+
+require Foo if $condition;
+print $Foo::VERSION;
+
+eval { require Bar };
+print $Bar::VERSION;
+
+if ( require Baz ) {
+    print $Baz::VERSION;
+}
+
+## ---- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.17 ] ----
+## name Chained method call on missing module
+## failures 4
+## cut
+
+Foo->bar;
+Foo->bar->baz();
+Foo->bar()->baz();
+Foo->bar( $arg1 )->baz( $arg2 );
+
+## ---- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.18 ] ----
+## name Chained method call on included module
+## failures 0
+## cut
+
+use Foo;
+
+Foo->bar;
+Foo->bar->baz();
+Foo->bar()->baz();
+Foo->bar( $arg1 )->baz( $arg2 );
+
+## ---- Perl::Critic::Policy::Modules::RequireExplicitInclusion [ 2.19 ] ----
+## name Method called on the return value of a builtin function;
+## failures 0
+## cut
+
+sub example {
+    my $something = shift->method();
 }
 
 ##############################################################################

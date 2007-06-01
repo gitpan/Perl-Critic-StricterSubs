@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/t/Subroutines/ProhibitCallsToUndeclaredSubs.run $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/t/Subroutines/ProhibitCallsToUndeclaredSubs.run $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ##############################################################################
 
 ## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.0 ]--
@@ -127,7 +127,7 @@ baz();
 BAZ();
 
 ## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.8 ] -
-## name Import list as multi-line qw() expression
+## name Import list as multi-line qw() expression with sigil
 ## failures 0
 ## cut
 
@@ -142,6 +142,21 @@ bar();
 baz();
 
 ## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.9 ] -
+## name Import list as multi-line qw() expression without sigil
+## failures 0
+## cut
+
+use Foo qw(
+    foo
+    bar
+    baz
+);
+
+foo();
+bar();
+baz();
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.10 ]-
 ## name Subroutine declared via constant pragma
 ## failures 0
 ## cut
@@ -149,10 +164,18 @@ baz();
 use constant FOO => 42;
 use constant (BAR => 'shizzle');
 
+use constant {
+  ALPHA => 123,
+  BETA  => 456,
+  GAMMA => 789,
+};
+
 print FOO + 91;
 warn BAR;
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.10 ]-
+print ALPHA + BETA + GAMMA;
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.11 ]-
 ## name Don't detect barewords that are known to be filehandles
 ## failures 0
 ## cut
@@ -163,7 +186,7 @@ printf STDERR $some_message;
 print {STDERR} $some_message;
 printf {STDIN} $some_message;
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.11 ]-
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.12 ]-
 ## name Don't detect barewords that *appear* to be filehandles
 ## failures 0
 ## cut
@@ -175,9 +198,8 @@ open DEBUG, $some_path;
 write DEBUG, $some_bits;
 tell DEBUG;
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.12 ]-
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.13 ]-
 ## name Don't detect barewords that *appear* to be filehandles inside parens
-## TODO We don't handle this yet
 ## failures 0
 ## cut
 
@@ -189,7 +211,7 @@ open(DEBUG, $some_path);
 write(DEBUG, $some_bits);
 tell(DEBUG);
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.13 ]-
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.14 ]-
 ## name Don't detect barewords in hashkeys
 ## failures 0
 ## cut
@@ -197,7 +219,15 @@ tell(DEBUG);
 $hash{FOO} = $value;
 %hash = ( BAR => $value );
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.14 ]-
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.15 ]-
+## name Detect function calls in hashkeys
+## failures 2
+## cut
+
+$hash{ foo() } = $value;
+%hash = ( bar() => $value );
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.16 ]-
 ## name Don't detect line labels
 ## failures 0
 ## cut
@@ -208,7 +238,7 @@ LABEL:  foreach $foo (@list) {
 
 sub do_something{}
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.15 ]-
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.17 ]-
 ## name Symbol by same name is imported, but is not a subroutine
 ## failures 3
 ## cut
@@ -221,7 +251,7 @@ foo();
 bar();
 baz();
 
-## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.16 ]-
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.18 ]-
 ## name Don't catch perl builtins
 ## failures 0
 ## cut
@@ -229,6 +259,49 @@ baz();
 grep { lc($_) } @list;
 open my $fh, '>', $path || die $!;
 print {$fh} join( ' ', split( m/$delimiter/, $string ) );
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.19 ]-
+## name Don't catch subroutines that are configured to be exempt
+## parms { exempt_subs => 'Test::Simple::ok  Test::More::cmp_ok' }
+## failures 0
+## cut
+
+use Test::Simple;
+use Test::More;
+
+ok( $result );
+cmp_ok( $this, '>', $that );
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.20 ]-
+## name Do catch subroutines that are NOT configured to be exempt
+## parms { exempt_subs => 'Foo::Bar::ok  Foo::Bar::cmp_ok' }
+## failures 2
+## cut
+
+use Test::Simple;
+use Test::More;
+
+ok( $result );
+cmp_ok( $this, '>', $that );
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.21 ]-
+## name Subroutine is onfigured to be exempt; package is loaded at run-time
+## parms { exempt_subs => 'Test::Perl::Critic::all_critic_ok' }
+## failures 0
+## cut
+
+eval{ require Test::Perl::Critic };
+all_critic_ok() if not $@;
+
+## - Perl::Critic::Policy::Subroutines::ProhibitCallsToUndeclaredSubs [ 1.22 ]-
+## name Subroutine is onfigured to be exempt; package is loaded conditionally
+## parms { exempt_subs => 'Test::Perl::Critic::all_critic_ok' }
+## failures 0
+## cut
+
+if ( require Test::Perl::Critic ){
+    all_critic_ok();
+}
 
 ##############################################################################
 # Local Variables:

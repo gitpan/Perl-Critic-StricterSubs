@@ -10,18 +10,24 @@ package Perl::Critic::Policy::Subroutines::ProhibitExportingUndeclaredSubs;
 use strict;
 use warnings;
 use Carp qw(croak);
+use English qw(-no_match_vars);
 use base 'Perl::Critic::Policy';
 
 use Perl::Critic::Utils qw(
     &hashify
+    &policy_short_name
     :severities
 );
 
-use Perl::Critic::StricterSubs::Utils qw( &find_exported_sub_names );
+use Perl::Critic::StricterSubs::Utils qw(
+    &find_declared_constant_names
+    &find_declared_subroutine_names
+    &find_exported_subroutine_names
+);
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 #-----------------------------------------------------------------------------
 
@@ -34,32 +40,32 @@ sub applies_to           { return 'PPI::Document'         }
 
 sub violates {
     my ($self, $elem, $doc) = @_;
-    my @exported_sub_names = find_exported_sub_names( $doc );
-    my @declared_sub_names = _find_declared_sub_names( $doc );
-    my %declared_sub_names = hashify( @declared_sub_names );
-    my @violations = ();
 
+    my @exported_sub_names = ();
+    eval { @exported_sub_names = find_exported_subroutine_names( $doc ) };
+
+    if ( $EVAL_ERROR =~ m/Found \s multiple/mx ) {
+        my $pname = policy_short_name(__PACKAGE__);
+        my $fname = $doc->filename() || 'unknown';
+        warn qq{$pname: $EVAL_ERROR in file "$fname"\n};
+        return;
+    }
+
+    my @declared_sub_names = find_declared_subroutine_names( $doc );
+    my @declared_constants = find_declared_constant_names( $doc );
+    my %declared_sub_names = hashify( @declared_sub_names,
+                                      @declared_constants );
+
+    my @violations = ();
     for my $sub_name ( @exported_sub_names ) {
         if ( not exists $declared_sub_names{ $sub_name } ){
-            my $msg = qq{Subroutine "$sub_name" is exported but not declared};
-            my $desc = qq{Perhaps you forgot to define "$sub_name"};
-            push @violations, $self->violation( $msg, $desc, $doc );
+            my $desc = qq{Subroutine "$sub_name" is exported but not declared};
+            my $expl = qq{Perhaps you forgot to define "$sub_name"};
+            push @violations, $self->violation( $desc, $expl, $doc );
         }
     }
 
     return @violations;
-}
-
-#-----------------------------------------------------------------------------
-
-sub _find_declared_sub_names {
-    my ($doc) = @_;
-    my $sub_nodes = $doc->find('PPI::Statement::Sub');
-    return if not $sub_nodes;
-
-    my @sub_names = map { $_->name() } @{ $sub_nodes };
-    for (@sub_names) { s{\A .*::}{}mx };  # Remove leading package name
-    return @sub_names;
 }
 
 #-----------------------------------------------------------------------------

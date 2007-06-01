@@ -18,18 +18,20 @@ use Perl::Critic::Utils qw(
     &hashify
     &is_function_call
     &is_perl_builtin
+    &is_qualified_name
     &policy_short_name
     :characters
     :severities
 );
 
 use Perl::Critic::StricterSubs::Utils qw{
-    &find_exported_sub_names
+    &find_exported_subroutine_names
+    &find_subroutine_calls
 };
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 #-----------------------------------------------------------------------------
 
@@ -79,6 +81,7 @@ sub new {
 
 
     $self->{_inc} = File::PathList->new( paths => \@inc, cache => 1 );
+    $self->{_exports_by_package} = {};
     return $self;
 }
 
@@ -89,22 +92,27 @@ sub _get_inc {
     return $self->{_inc};
 }
 
+sub _get_exports_by_package {
+    my $self = shift;
+    return $self->{_exports_by_package}
+}
+
 #-----------------------------------------------------------------------------
 
 sub violates {
     my ($self, undef, $doc) = @_;
 
     my @violations   = ();
-    my %export_cache = ();
     my $expl = q{Violates encapsulation};
 
-    for my $sub_call ( _get_qualified_subroutine_calls($doc) ) {
+    for my $sub_call ( find_subroutine_calls($doc) ) {
+        next if not is_qualified_name( $sub_call );
 
         my ($package, $sub_name)  = $self->_parse_subroutine_call( $sub_call );
         next if _is_builtin_package( $package );
 
-        $export_cache{$package} ||= $self->_get_exports_for_package($package);
-        if ( not exists $export_cache{ $package }->{ $sub_name } ){
+        my $exports = $self->_get_exports_for_package( $package );
+        if ( not exists $exports->{ $sub_name } ){
 
             my $desc = qq{Subroutine "$sub_name" not exported by "$package"};
             push @violations, $self->violation( $desc, $expl, $sub_call );
@@ -138,11 +146,22 @@ sub _parse_subroutine_call {
 sub _get_exports_for_package {
     my ( $self, $package_name ) = @_;
 
-    my $file_name = $self->_get_file_name_for_package_name( $package_name );
-    return if not $file_name;
+    my $exports = $self->_get_exports_by_package()->{$package_name};
+    if (not $exports) {
+        $exports = {};
 
-    my @exports = $self->_get_exports_from_file( $file_name );
-    return { hashify( @exports ) };
+        my $file_name =
+            $self->_get_file_name_for_package_name( $package_name );
+
+        if ($file_name) {
+            $exports =
+                { hashify ( $self->_get_exports_from_file( $file_name ) ) };
+        }
+
+        $self->_get_exports_by_package()->{$package_name} = $exports;
+    }
+
+    return $exports;
 }
 
 #-----------------------------------------------------------------------------
@@ -156,7 +175,7 @@ sub _get_exports_from_file {
         die "$pname: could not parse $file_name: $PPI::Document::errstr\n";
     }
 
-    return find_exported_sub_names( $doc );
+    return find_exported_subroutine_names( $doc );
 }
 
 #-----------------------------------------------------------------------------
@@ -192,39 +211,6 @@ sub _find_file_in_at_INC {
 
 #-----------------------------------------------------------------------------
 
-sub _get_qualified_subroutine_calls {
-    my ($doc) = @_;
-
-    my $sub_calls_ref = $doc->find( \&_is_subroutine_call );
-    return if not $sub_calls_ref;
-
-    my @qualified_sub_calls = grep { $_ =~ m{::}mx } @{$sub_calls_ref};
-    return @qualified_sub_calls;
-}
-
-#-----------------------------------------------------------------------------
-
-sub _is_subroutine_call {
-    my (undef, $elem) = @_;
-
-    if ( $elem->isa('PPI::Token::Word') ) {
-
-        return 0 if is_perl_builtin( $elem );
-        return 1 if is_function_call( $elem );
-
-    }
-    elsif ($elem->isa('PPI::Token::Symbol')) {
-
-        return 1 if $elem->symbol_type eq q{&};
-    }
-
-    return 0;
-}
-
-
-
-#-----------------------------------------------------------------------------
-
 my %BUILTIN_PACKAGES = hashify( qw(CORE CORE::GLOBAL UNIVERSAL main), $EMPTY );
 
 sub _is_builtin_package {
@@ -251,14 +237,39 @@ This policy is part of L<Perl::Critic::StricterSubs>.
 =head1 DESCRIPTION
 
 Many Perl modules define their public interface by exporting subroutines via
-L<Exporter>.  The goal of this Policy is to help enforce encapsulation by
-checking that the target of any fully-qualified subroutine call is named
-in the module's C<@EXPORT> or C<@EXPORT_OK>.
+L<Exporter>.  The goal of this Policy is to enforce encapsulation by by
+prohibiting calls to subroutines that are not listed in the callee's C<@EXPORT>
+or C<@EXPORT_OK>.
 
 =head1 LIMITATIONS
 
 This Policy does not properly deal with the L<only> pragma or modules that
-don't use L<Exporter> for their export mechanism, such as L<CGI>.
+don't use L<Exporter> for their export mechanism, such as L<CGI>.  In the
+near future, we might fix this by allowing you configure the policy with
+a list of packages that are exempt from this policy.
+
+=head1 DIAGNOSTICS
+
+=over 8
+
+=item C<Subroutines::ProhibitCallsToUnexportedSubs: Cannot find source file>
+
+This warning usually indicates that the file under analysis includes modules
+that are not installed in this perl's <@INC> paths.  See L<"CONFIGURATION">
+for controlling the C<@INC> list this Policy.
+
+This warning can also happen when one of the included modules contains
+multiple packages, or if the package name doesn't match the file name.
+L<Perl::Critic> advises against both of these conditions, and has additional
+Policies to help enforce that.
+
+=back
+
+=head1 SEE ALSO
+
+L<Perl::Critic::Policy::Modules::ProhibitMultiplePackages>
+
+L<Perl::Critic::Policy::Modules::RequireFilenameMatchesPackage>
 
 =head1 AUTHOR
 

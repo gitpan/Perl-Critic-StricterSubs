@@ -1,8 +1,8 @@
 #######################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.01/Build.PL $
-#     $Date: 2007-04-12 01:12:30 -0700 (Thu, 12 Apr 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/Build.PL $
+#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
 #   $Author: thaljef $
-# $Revision: 1464 $
+# $Revision: 1559 $
 ########################################################################
 
 use strict;
@@ -16,10 +16,10 @@ my $builder = Module::Build->new(
   dist_abstract  => 'Perl::Critic plugin for stricter subroutine checking',
   license        => 'perl',
 
-  requires       => {'Perl::Critic'              => 1.051,
-                     'Perl::Critic::Utils'       => 1.051,
-                     'Perl::Critic::Violation'   => 1.051,
-                     'Perl::Critic::TestUtils'   => 1.051,
+  requires       => {'Perl::Critic'              => 1.052,
+                     'Perl::Critic::Utils'       => 1.052,
+                     'Perl::Critic::Violation'   => 1.052,
+                     'Perl::Critic::TestUtils'   => 1.052,
                      'File::PathList'            => 0,
                     },
 
