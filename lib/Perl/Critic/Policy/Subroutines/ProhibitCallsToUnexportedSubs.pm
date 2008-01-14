@@ -15,13 +15,13 @@ use PPI::Document;
 use File::PathList;
 
 use Perl::Critic::Utils qw(
+    :characters
+    :severities
     &hashify
     &is_function_call
     &is_perl_builtin
     &is_qualified_name
     &policy_short_name
-    :characters
-    :severities
 );
 
 use Perl::Critic::StricterSubs::Utils qw{
@@ -31,7 +31,7 @@ use Perl::Critic::StricterSubs::Utils qw{
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 #-----------------------------------------------------------------------------
 
@@ -225,6 +225,8 @@ sub _is_builtin_package {
 __END__
 
 =pod
+
+=for stopwords callee's
 
 =head1 NAME
 

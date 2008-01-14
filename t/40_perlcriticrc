@@ -1,11 +1,12 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/t/40_perlcriticrc $
-#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.03/t/40_perlcriticrc $
+#     $Date: 2008-01-13 18:30:52 -0800 (Sun, 13 Jan 2008) $
 #   $Author: thaljef $
-# $Revision: 1559 $
+# $Revision: 2096 $
 ##############################################################################
 
 severity = 1
+theme = core
 
 #-----------------------------------------------------------------------------
 
@@ -28,3 +29,5 @@ keywords = URL Date Author Revision
 [CodeLayout::ProhibitHardTabs]
 allow_leading_tabs = 0
 
+# We already use Test::Spelling
+[-Documentation::PodSpelling]

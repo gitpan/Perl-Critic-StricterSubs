@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/lib/Perl/Critic/StricterSubs/Utils.pm $
-#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.03/lib/Perl/Critic/StricterSubs/Utils.pm $
+#     $Date: 2008-01-13 18:30:52 -0800 (Sun, 13 Jan 2008) $
 #   $Author: thaljef $
-# $Revision: 1559 $
+# $Revision: 2096 $
 ##############################################################################
 
 package Perl::Critic::StricterSubs::Utils;
@@ -16,18 +16,18 @@ use Carp qw(croak);
 
 use List::MoreUtils qw( any );
 use Perl::Critic::Utils qw(
+    :characters
+    :severities
     &first_arg
     &hashify
     &is_function_call
     &is_perl_builtin
     &words_from_string
-    :characters
-    :severities
 );
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 #-----------------------------------------------------------------------------
 
@@ -118,11 +118,12 @@ sub _wanted_include_statement {
 #-----------------------------------------------------------------------------
 
 sub _find_exported_names {
-    my ($doc) = shift;
+    my ($doc, @export_types) = @_;
 
-    my @export_types = @_ ? @_ : qw{@EXPORT @EXPORT_OK};
+    @export_types = @export_types ?
+                    @export_types : qw{@EXPORT @EXPORT_OK};
+
     my @all_exports = ();
-
     for my $export_type( @export_types ) {
 
         my $export_assignment = _find_export_assignment( $doc, $export_type );
@@ -226,7 +227,7 @@ sub find_declared_constant_names {
         my $pragma_bareword = $constant_pragma->schild(1);
         my $sibling = $pragma_bareword->snext_sibling();
 
-        if ( defined $sibling && $sibling->isa('PPI::Structure::Block') ) {
+        if ( defined $sibling && $sibling->isa('PPI::Structure::Constructor') ) {
             # Parse the multi-constant block form...
             push @declared_constants, _get_keys_of_hash($sibling);
         }

@@ -1,11 +1,17 @@
 #######################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/Changes $
-#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.03/Changes $
+#     $Date: 2008-01-13 18:30:52 -0800 (Sun, 13 Jan 2008) $
 #   $Author: thaljef $
-# $Revision: 1559 $
+# $Revision: 2096 $
 ########################################################################
 
-[0.02] Released on ????-??-??
+[0.03] Released on 2008-01-10
+
+     Fixed test failures due to incompatibility with newer
+     PPI versions.  This distro now requires PPI 1.2 vis-a-vi
+     Perl-Critic 1.080.  Thanks cpantesters!
+   
+[0.02] Released on 2007-07-01
 
      ProhibitCallsToUndeclaredSubs is now configurable to exempt specific
      packages and subroutines.  See docs for details.

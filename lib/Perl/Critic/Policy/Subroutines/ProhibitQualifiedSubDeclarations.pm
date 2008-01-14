@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/lib/Perl/Critic/Policy/Subroutines/ProhibitQualifiedSubDeclarations.pm $
-#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.03/lib/Perl/Critic/Policy/Subroutines/ProhibitQualifiedSubDeclarations.pm $
+#     $Date: 2008-01-13 18:30:52 -0800 (Sun, 13 Jan 2008) $
 #   $Author: thaljef $
-# $Revision: 1559 $
+# $Revision: 2096 $
 ##############################################################################
 
 package Perl::Critic::Policy::Subroutines::ProhibitQualifiedSubDeclarations;
@@ -11,11 +11,11 @@ use strict;
 use warnings;
 use base 'Perl::Critic::Policy';
 
-use Perl::Critic::Utils qw( &is_qualified_name :severities);
+use Perl::Critic::Utils qw( :severities &is_qualified_name );
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 #-----------------------------------------------------------------------------
 

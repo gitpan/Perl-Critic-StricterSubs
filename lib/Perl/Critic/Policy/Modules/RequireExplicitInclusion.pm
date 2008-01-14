@@ -1,8 +1,8 @@
 ##############################################################################
-#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.02/lib/Perl/Critic/Policy/Modules/RequireExplicitInclusion.pm $
-#     $Date: 2007-06-01 01:14:14 -0700 (Fri, 01 Jun 2007) $
+#      $URL: http://perlcritic.tigris.org/svn/perlcritic/tags/Perl-Critic-StricterSubs-0.03/lib/Perl/Critic/Policy/Modules/RequireExplicitInclusion.pm $
+#     $Date: 2008-01-13 18:30:52 -0800 (Sun, 13 Jan 2008) $
 #   $Author: thaljef $
-# $Revision: 1559 $
+# $Revision: 2096 $
 ##############################################################################
 
 package Perl::Critic::Policy::Modules::RequireExplicitInclusion;
@@ -12,14 +12,14 @@ use warnings;
 use base 'Perl::Critic::Policy';
 
 use Perl::Critic::Utils qw(
+    :characters
+    :severities
     &hashify
     &is_class_name
     &is_function_call
     &is_perl_builtin
     &is_qualified_name
     &policy_short_name
-    :characters
-    :severities
 );
 
 use Perl::Critic::StricterSubs::Utils qw(
@@ -29,7 +29,7 @@ use Perl::Critic::StricterSubs::Utils qw(
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 my $expl =
     'Without importing a package, it is unlikely that references to things inside it even exist.';
@@ -170,7 +170,7 @@ sub _extract_package_from_symbol {
     # the sigil and the last "::".
 
     my $symbol = shift;
-    if ($symbol->canonical() =~ m/\A [\$\*\@\%\&] ( .* ) :: [^:]+ \z/xms) {
+    if ($symbol->canonical() =~ m/\A [\$*@%&] ( .* ) :: [^:]+ \z/xms) {
         return $1;
     }
 

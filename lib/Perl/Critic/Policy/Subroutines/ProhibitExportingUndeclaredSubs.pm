@@ -14,9 +14,9 @@ use English qw(-no_match_vars);
 use base 'Perl::Critic::Policy';
 
 use Perl::Critic::Utils qw(
+    :severities
     &hashify
     &policy_short_name
-    :severities
 );
 
 use Perl::Critic::StricterSubs::Utils qw(
@@ -27,7 +27,7 @@ use Perl::Critic::StricterSubs::Utils qw(
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 #-----------------------------------------------------------------------------
 
